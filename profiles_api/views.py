@@ -3,6 +3,9 @@
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
+# list of useful http status codes that you can use when returning responses from your api
+from profiles_api import serializers
 
 
 class HelloApiView(APIView):
@@ -10,6 +13,10 @@ class HelloApiView(APIView):
     # allows us to define the application logic for the endpoint we'll assign to this view
     # it chooses the right function based on the request
     # a URL will be assigned to the API
+
+    serializer_class = serializers.HelloSerializer
+    # whenever you're sending a post, put, or patch request expect an input of "name"
+    # and we'll validate it at a max length of 10
 
     def get(self, request, format=None):
         """Returns a list of APIView features"""
@@ -22,6 +29,41 @@ class HelloApiView(APIView):
         ]
 
         return Response({'message': 'Hello!', 'an_apiview': an_apiview})
+
+    def post(self, request):
+        '''create a hello message with our name'''
+        # retreive the serializer and pass in the data sent in the request
+
+        serializer = self.serializer_class(data=request.data)
+        # looks weird but it's the standard way to retrieve the serializer class
+        # the (data=request.data) assigns the data from POST request to the API view
+        # confusing need to research more (perhaps it extracts the data type)
+
+        if serializer.is_valid():
+            name = serializer.validated_data.get('name')
+            message = f'Hello {name}'
+            return Response({'message': message})
+
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            # errors are automatically generated based on validation rules
+
+    def put(self, request, pk=None):
+        """handles updating an object"""
+        # the pk= allows the method to know which field you want to update
+        # other logic could be added in complex api
+        return Response(dict(method='PUT'))
+
+    def patch(self, request, pk=None):
+        '''handles a partial update of an object'''
+        return Response(dict(method='PATCH'))
+
+    def delete(self, request, pk=None):
+        '''deletes an object'''
+        return Response(dict(method='DELETE'))
 
 
 # Create your views here.
