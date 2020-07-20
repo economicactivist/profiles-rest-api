@@ -13,7 +13,7 @@ class HelloSerializer(serializers.Serializer):
     # define fields
     '''Serializes a name field for testing our APIView'''
     name = serializers.CharField(max_length=10)
-
+##testing
 
 class UserProfileSerializer(serializers.ModelSerializer):
     '''serializers a user profile object'''
