@@ -123,6 +123,6 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     # provides all the standard functons (create, list, update, etc) using objects.all()
     authentication_classes = (TokenAuthentication, )
     # comma at end creates tuple
-    permissions_classes = (permissions.UpdateOwnProfile, )
+    permission_classes = (permissions.UpdateOwnProfile, )
     # permissions are used for fine-grained authorization
 # Create your views here.
