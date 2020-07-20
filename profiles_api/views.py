@@ -1,9 +1,10 @@
-#from django.shortcuts import render
+# from django.shortcuts import render
 # the above should be removed for creating custom api
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import viewsets
 # list of useful http status codes that you can use when returning responses from your api
 from profiles_api import serializers
 
@@ -65,5 +66,46 @@ class HelloApiView(APIView):
         '''deletes an object'''
         return Response(dict(method='DELETE'))
 
+
+class HelloViewSet(viewsets.ViewSet):
+    '''Test API ViewSet'''
+    serializer_class = serializers.HelloSerializer
+
+    def list(self, request):
+        '''return a hello message'''
+        a_viewset = [
+            'Uses actions (list, create, retireve, update partial_update)',
+            'Automatically maps to URLs using Routers',
+            'Provides more functionality with less code',
+        ]
+        return Response(dict(message='Hello', a_viewset=a_viewset))
+
+    def create(self, request):
+        '''create a new hello message(POST)'''
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            name = serializer.validated_data.get('name')
+            message = f'Hello {name}!'
+            return Response(dict(message=message))
+
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+    def retrieve(self, request, pk=None):
+        '''get a specific object based on id'''
+        return Response(dict(http_method='GET'))
+
+    def update(self, request, pk=None):
+        return Response(dict(http_method='PUT'))
+
+    def partial_update(self, request, pk=None):
+        return Response(dict(http_method='PATCH'))
+
+    def destroy(self, request, pk=None):
+        return Response(dict(http_method='DELETE'))
 
 # Create your views here.
