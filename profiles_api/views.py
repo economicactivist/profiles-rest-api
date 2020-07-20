@@ -5,8 +5,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
 # list of useful http status codes that you can use when returning responses from your api
 from profiles_api import serializers
+from profiles_api import models
+from profiles_api import permissions
 
 
 class HelloApiView(APIView):
@@ -108,4 +111,18 @@ class HelloViewSet(viewsets.ViewSet):
     def destroy(self, request, pk=None):
         return Response(dict(http_method='DELETE'))
 
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    '''Handles creating and updating profiles'''
+    # connect it to a serializer class (just like regular viewset)
+    # provide a query set to the Modelviewset so it knows which
+    # objects in the data base are going to be managed
+
+    serializer_class = serializers.UserProfileSerializer
+    queryset = models.UserProfile.objects.all()
+    # provides all the standard functons (create, list, update, etc) using objects.all()
+    authentication_classes = (TokenAuthentication, )
+    # comma at end creates tuple
+    permissions_classes = (permissions.UpdateOwnProfile, )
+    # permissions are used for fine-grained authorization
 # Create your views here.
