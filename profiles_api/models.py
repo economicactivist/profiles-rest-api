@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
+from django.conf import settings  #used to import stuff from settings.py
 
 
 class UserProfileManager(BaseUserManager):
@@ -56,3 +57,24 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
         """Return string representation of our user"""
         return self.email
 # Create your models here.
+
+class ProfileFeedItem(models.Model):
+    '''Profile status update'''
+    #will link two models together
+    #used allow user to store status updates in the system
+    #will associate profile feed obj to user who created
+    #therefore it needs to use a foreign key
+    #will prevent you from creating a feed item for a user who doesn't exist
+
+    user_profile = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE
+    )
+
+    status_text = models.CharField(max_length=255)
+    created_on = models.DateTimeField(auto_now_add=True)
+    #automatically add datetime info when added
+
+    def __str__(self):
+        '''Return the model as a string'''
+        return self.status_text

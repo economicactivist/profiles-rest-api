@@ -11,7 +11,7 @@ router.register('hello-viewset', views.HelloViewSet, base_name='hello-viewset')
 router.register('profile', views.UserProfileViewSet)
 # no need to specify 'base_name' because you have a queryset and DRF can
 # figure out the base_name from the query set
-
+router.register('feed', views.UserProfileFeedViewSet)
 
 urlpatterns = [
     path('hello-view/', views.HelloApiView.as_view()),

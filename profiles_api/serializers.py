@@ -53,3 +53,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
         # pop the unhashed password fron the dictionary and then hash it
         return super().update(instance, validated_data)
         # pass value up to the existing DRF update() method
+
+class ProfileFeedItemSerializer(serializers.ModelSerializer):
+    '''Serializes profile feed items'''
+    class Meta:
+        model = models.ProfileFeedItem
+        fields = ('id', 'user_profile', 'status_text', 'created_on')
+        extra_kwargs = dict(user_profile=dict(read_only=True))
+        #make user profile field read only so that a user can't assign a 
+        #feed item to another user 
